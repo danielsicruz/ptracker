@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const database = require('./db')
 
 const context = require('./mContext')
-const Object = database.define('Place',{
+const Place = database.define('Place',{
     id:{
         type:Sequelize.INTEGER,
         allowNull: false,
@@ -24,3 +24,5 @@ const Object = database.define('Place',{
     }
     
 })
+
+module.exports = Place

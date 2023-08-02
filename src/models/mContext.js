@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const database = require('./db')
 
-const Object = database.define('Context',{
+const Context = database.define('Context',{
     id:{
         type:Sequelize.INTEGER,
         autoIncrement:true,
@@ -12,3 +12,5 @@ const Object = database.define('Context',{
         type: Sequelize.STRING
     },    
 })
+
+module.exports = Context

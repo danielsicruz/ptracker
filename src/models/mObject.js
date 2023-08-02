@@ -17,3 +17,4 @@ const Object = database.define('Object',{
         type:Sequelize.TEXT
     }
 })
+module.exports = Object;

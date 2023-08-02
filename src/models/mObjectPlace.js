@@ -5,7 +5,7 @@ const place = require("./mPlace")
 const object = require("./mObject")
 const user = require("./mUser")
 
-const Object = database.define('ObjectPlace', {
+const ObjectPlace = database.define('ObjectPlace', {
     idObject: {
         type: Sequelize.INTEGER,
         references: {
@@ -33,3 +33,5 @@ const Object = database.define('ObjectPlace', {
     }
 
 })
+
+module.exports = ObjectPlace

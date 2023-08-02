@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 require("dotenv").config();
+const db = require("./src/models/db")
+db.sync()
+const user = require("./src/routes/user")
 
 const app = express();
 const port = 3000;
@@ -15,4 +18,5 @@ app.get('/', (req, res) =>{
 
 app.listen(port, () =>{
     console.log(`Servidor rodando na porta ${port}`);
+    
 })

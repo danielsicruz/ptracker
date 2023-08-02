@@ -16,6 +16,9 @@ const User = database.define('User',{
     },
     password:{
         type:Sequelize.TEXT
+    },
+    active:{
+        type:Sequelize.BOOLEAN
     }
     
 })

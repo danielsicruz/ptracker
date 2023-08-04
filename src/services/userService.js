@@ -6,9 +6,10 @@ exports.create = async (req, res) => {
     console.log(data);
     //data.user_image = "/images/"+req.file.originalname;
     //rules
-    if (true) {
+    let user = await userController.selectOne({login:data.login});
+    if (user == null) {
         data.password = await bcrypt.hash(data.password,8);
-        user = await userController.create(data, res);
+        user = await userController.create(data);
         return res.status(201).json(user);
     } else {
         return res.status(401).json({ 'message': 'Unauthorized' });
@@ -21,7 +22,7 @@ exports.select = async (req, res) => {
         name: data.name ? data.name : null,
         login: data.login ? data.login : null,
         password: data.password ? data.password : null,
-        active: data.active ? data.active : null,
+        active: data.active ? data.active : null, //Test because is boolean
         id: data.id ? data.id : null,
         created_at: data.created_at ? data.created_at : null,
         updated_at: data.updated_at ? data.updated_at : null,
@@ -40,7 +41,7 @@ exports.select = async (req, res) => {
         console.log("No filter");
         //rules
         if (true) {
-            users = await userController.select(null, res);
+            users = await userController.select(null);
             return res.status(200).json(users);
         } else {
             return res.status(401).json({ 'message': 'Unauthorized' });
@@ -50,7 +51,7 @@ exports.select = async (req, res) => {
         if (true) {
             //return res.status(200).json(filter);
 
-            users = await userController.select(filter, res);
+            users = await userController.select(filter);
             return res.status(200).json(users);
         } else {
             return res.status(401).json({ 'message': 'Unauthorized' });
@@ -63,7 +64,7 @@ exports.update = async (req, res) => {
     data.id = req.params.id;
     //rules
     if (true) {
-        user = await userController.update(data, res);
+        user = await userController.update(data);
         return res.status(200).json(user);
 
     } else {

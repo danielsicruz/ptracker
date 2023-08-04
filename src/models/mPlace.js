@@ -23,6 +23,6 @@ const Place = database.define('Place',{
         }
     }
     
-})
+}, { paranoid: true })
 
 module.exports = Place

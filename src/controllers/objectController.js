@@ -1,4 +1,3 @@
-const db = require("../models/db")
 const Object = require("../models/mObject")
 
 exports.create = async (data) => {
@@ -12,6 +11,7 @@ exports.create = async (data) => {
 }
 
 exports.select = async (filters = null, res) => {
+    let response;
     if (filters == null) {
 
         response = await User.findAll();

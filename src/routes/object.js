@@ -1,11 +1,11 @@
 const express = require("express");
 const { route } = require("express/lib/application");
 let router = express.Router();
-const userService = require("../services/userService");
+const objectService = require("../services/objectService");
 
-router.post("/", userService.create);
-router.get("/", userService.select);
-router.put("/:id", userService.update);
-//srouter.delete("/:id", userService.delete)
+router.post("/", objectService.create);
+router.get("/", objectService.select);
+router.put("/:id", objectService.update);
+//srouter.delete("/:id", objectService.delete)
 
 module.exports = router;

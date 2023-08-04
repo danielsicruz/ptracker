@@ -4,6 +4,10 @@ require("dotenv").config();
 const db = require("./src/models/db")
 db.sync()
 const user = require("./src/routes/user")
+const object = require("./src/routes/object")
+const objectPlace = require("./src/routes/objectPlace")
+const place = require("./src/routes/place")
+const context = require("./src/routes/user")
 
 const app = express();
 const port = 3000;

@@ -1,5 +1,5 @@
 const db = require("../models/db")
-const user = require("../models/mUser")
+const User = require("../models/mUser")
 
 exports.create = async (data, res) => {
     response = await User.create({
@@ -47,6 +47,9 @@ exports.update = async (data, res) => {
     tochange.password = data.password ? data.password : tochange.password;
     tochange.active = data.active ? data.active : tochange.active;
     tochange.login = data.login ? data.login : tochange.login
+
+    response = await tochange.save();
+    return response;
 }
 
 exports.delete = async (data, res) => {

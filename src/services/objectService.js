@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.update = async (req,res) => {
+exports.select = async (req,res) => {
     data = req.body;
     filter = {
         name: data.name ? data.name : null,
@@ -52,5 +52,17 @@ exports.update = async (req,res) => {
         } else {
             return res.status(401).json({ 'message': 'Unauthorized' });
         }
+    }
+}
+exports.update = async (req, res) => {
+    data = req.body;
+    data.id = req.params.id;
+    //rules
+    if (true) {
+        object = await objectController.update(data);
+        return res.status(200).json(object);
+
+    } else {
+        return res.status(401).json({ 'message': 'Unauthorized' });
     }
 }

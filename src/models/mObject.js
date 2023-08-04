@@ -15,6 +15,9 @@ const Object = database.define('Object',{
     },
     imagePath:{
         type:Sequelize.TEXT
+    },
+    dispatched:{
+        type:Sequelize.BOOLEAN
     }
 })
 module.exports = Object;

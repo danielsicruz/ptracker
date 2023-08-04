@@ -3,7 +3,7 @@ const database = require('./db')
 
 const Object = database.define('Object',{
     id:{
-        type:Sequelize.STRING,
+        type:Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true
     },

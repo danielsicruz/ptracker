@@ -3,10 +3,10 @@ const database = require('./db')
 
 const User = database.define('User', {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncremet: true
+        defaultValue: Sequelize.UUIDV4
     },
     name: {
         type: Sequelize.STRING

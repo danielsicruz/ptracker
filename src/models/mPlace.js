@@ -6,7 +6,8 @@ const Place = database.define('Place',{
     id:{
         type:Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement:true,
     },
     vid:{
         type:Sequelize.STRING,

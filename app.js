@@ -1,24 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser')
+const path = require("path")
 require("dotenv").config();
 const db = require("./src/models/db")
 db.sync()
-const user = require("./src/routes/user")
-const object = require("./src/routes/object")
-const objectPlace = require("./src/routes/objectPlace")
-const place = require("./src/routes/place")
-const context = require("./src/routes/user")
+routes = require("./src/routes/routes")
+views = require("./src/routes/viewRoutes")
 
 const app = express();
 const port = 3000;
 
+app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.json());
 
-app.get('/', (req, res) =>{
-    res.send('Estamos on');
-})
+app.use("/api",routes);
+
+app.use('/', views)
 
 app.listen(port, () =>{
     console.log(`Servidor rodando na porta ${port}`);

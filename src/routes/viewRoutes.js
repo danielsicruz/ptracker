@@ -8,9 +8,7 @@ router.get("/home", (req, res) =>{
     res.render('home');
 });
 router.get("/place", (req, res) =>{
-    res.render('place',{place:{
-        
-    }});
+    res.render('place',{places:[]});
 });
 
 module.exports = router;

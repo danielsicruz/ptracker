@@ -6,7 +6,6 @@ const Object = database.define('Object',{
         type:Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
-        autoIncrement:true,
     },
     name:{
         type: Sequelize.STRING

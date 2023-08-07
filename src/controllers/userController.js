@@ -59,3 +59,9 @@ exports.delete = async (data) => {
         }
     });
 }
+exports.joins = async (data = null) => {
+
+    response = await User.findAll(data);
+
+return response;
+}

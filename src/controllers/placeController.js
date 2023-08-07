@@ -50,3 +50,6 @@ exports.delete = async (data) => {
         }
     });
 }
+exports.joins = async (data) => {
+    return Place.findAll(data);
+}

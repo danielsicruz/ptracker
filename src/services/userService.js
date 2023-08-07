@@ -1,5 +1,8 @@
 const userController = require("../controllers/userController");
 const bcrypt = require("bcryptjs");
+const Place = require("../models/mPlace");
+const User = require("../models/mUser");
+const Check = require("../models/mCheck");
 
 exports.create = async (req, res) => {
     data = req.body;
@@ -70,4 +73,16 @@ exports.update = async (req, res) => {
     } else {
         return res.status(401).json({ 'message': 'Unauthorized' });
     }
+}
+exports.test = async (req, res) => {
+    const buildObject = {
+        include: [
+            {
+                model: Check,
+                as: 'whoChecked', // Define um apelido para o relacionamento User
+            },
+        ],
+    }
+    response = await userController.joins(buildObject);
+    return res.status(200).json(response);
 }

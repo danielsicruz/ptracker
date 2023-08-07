@@ -1,4 +1,5 @@
 const placeController = require("../controllers/placeController");
+const Check = require("../models/mCheck");
 
 exports.create = async (req, res) => {
     data = req.body;
@@ -70,4 +71,18 @@ exports.delete = async (req, res) => {
     } else {
         return res.status(401).json({ 'message': 'Unauthorized' });
     }
+}
+exports.test = async (req, res) => {
+    const buildObject = {
+        include: [
+            {
+                model: Check,
+                as:'whereChecked',
+                required: false,
+            },
+        ],
+    }
+    response = await placeController.joins(buildObject)
+    //console.log(response);
+    return res.status(200).json(response);
 }

@@ -281,8 +281,9 @@
             <div class="row">
               <h3 class="pt-3">Qual sala iremos verificar?</h3>
               <div class="row row-cols-1 row-cols-md-3 g-4">
+                <% datas.forEach(data => { if (data.whereChecked.length != 0) {
+                %>
                 <div class="col">
-                  <% places.forEach(element => { %> <%}); %>
                   <div class="card" onclick="verifyAmbient();">
                     <img
                       src="./assets/images/Sesi-SP.jpg"
@@ -290,14 +291,34 @@
                       alt="..."
                     />
                     <div class="card-body">
-                      <h5 class="card-title">Sala 1</h5>
+                      <h5 class="card-title"><%= data.name %></h5>
                       <p class="card-text">
-                        Esta sala possui (X) objetos para ser encontrados<br>
-                        A ultima verificação foi feita por (Y) no dia (Z)
+                        Esta sala possui <%= data.whereChecked[data.whereChecked.length-1].objectsToFind %>
+                        objetos para ser encontrados<br />
+                        A ultima verificação foi feita por <%# data.User.name %>
+                        no dia <%= data.whereChecked[data.whereChecked.length-1].createdAt %>
                       </p>
                     </div>
                   </div>
                 </div>
+
+                <%}else{%>
+                <div class="col">
+                  <div class="card" onclick="verifyAmbient();">
+                    <img
+                      src="./assets/images/Sesi-SP.jpg"
+                      class="card-img-top"
+                      alt="..."
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title"><%= data.name %></h5>
+                      <p class="card-text">
+                        Esta sala ainda não foi verificada
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <%}}); %>
                 <div class="col">
                   <div class="card" id="vObjectCard" onclick="verifyObject();">
                     <img

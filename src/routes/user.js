@@ -5,6 +5,7 @@ const userService = require("../services/userService");
 
 router.post("/", userService.create);
 router.get("/", userService.select);
+router.get("/test", userService.test);
 router.put("/:id", userService.update);
 //srouter.delete("/:id", userService.delete)
 

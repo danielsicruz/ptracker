@@ -1,35 +1,22 @@
 const Sequelize = require('sequelize');
 const database = require('./db');
 
+const User = require("./mUser");
+const Place = require("./mPlace");
+const Object = require("./mObject");
+
 const Movement = database.define('Movement', {
-    idObject: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: object,
-            key: "id"
-        }
-    },
-    fromIdPlace: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: place,
-            key: "id"
-        }
-    },
-    toIdPlace: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: place,
-            key: "id"
-        }
-    },
     temporary: {
         type: Sequelize.BOOLEAN,
-        defaultValue: 0
+        defaultValue: 0,
     },
     whenBack:{
         type:Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        allowNull: true
+    },    
+    isBack:{
+        type:Sequelize.BOOLEAN,
+        allowNull: true
     }
 });
 

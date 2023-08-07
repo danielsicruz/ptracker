@@ -4,31 +4,26 @@ const database = require('./db')
 const place = require("./mPlace")
 const object = require("./mObject")
 const user = require("./mUser")
+const Check = require('./mCheck')
 
 const ObjectPlace = database.define('ObjectPlace', {
-    idObject: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: object,
-            key: "id"
-        }
-    },
-    idPlace: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: place,
-            key: "id"
-        }
-    },
-    stillThere: {
+    isThere: {
         type: Sequelize.BOOLEAN,
         defaultValue: 1,
     },
     movedBy: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
             model: user,
             key: "id"
+        }
+    },
+    lastCheck:{
+        type: Sequelize.UUID,
+        allowNull:true,
+        references:{
+            model: Check,
+            key:"id"
         }
     }
 

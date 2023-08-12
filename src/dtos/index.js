@@ -1,5 +1,6 @@
-const place = require("./place");
+const places = require("./places");
+const placesVerifying = require("./placesVerifying");
 
 module.exports = {
-    place,
+    places, placesVerifying
 }

@@ -8,12 +8,22 @@ router.get("/login", (req, res) => {
 });
 router.get("/home", async (req, res) => {
     const homeData = await data.place.data();
-    res.render('home');
+    res.render('home', {"pageName":"Home"});
 });
-router.get("/place", async (req, res) => {
-    const placeData = await data.place.data();
-    res.render('place', {
-        "datas": placeData
+router.get("/places", async (req, res) => {
+    const placeData = await data.places.data();
+    res.render('places', {
+        "datas": placeData,
+        "pageName": "Verificar lugares"
+    });
+});
+router.get("/places/verifying/:id", async (req, res) => {
+    const objects = await data.placesVerifying.data(req.params.id);
+    const placeData = await data.placesVerifying.place(req.params.id);
+    res.render('verifyingPlace', {
+        "datas": objects,
+        "pageName": "Verificando "+placeData.name,
+        "placeData": placeData
     });
 });
 

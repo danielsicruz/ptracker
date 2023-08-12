@@ -52,3 +52,7 @@ exports.delete = async (id) => {
         }
     });
 }
+
+exports.joins = async (data) => {
+    return ObjectPlace.findAll(data);
+}

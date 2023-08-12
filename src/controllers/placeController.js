@@ -31,6 +31,7 @@ exports.findById = async (id) => {
     response = await Place.findOne({
         where: { id: id }
     });
+    return response;
 }
 
 exports.update = async (data) => {

@@ -1,0 +1,134 @@
+<div
+  class="modal fade modal-lg"
+  id="finishingVerifyModal"
+  tabindex="-1"
+  aria-labelledby="finishingVerifyModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="finishingVerifyModalLabel"></h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="success-request body" id="mFVSuccessEnd" hidden="true">
+          <%- include("./successRequest") %>
+        </div>
+        <div class="error-request body" id="mFVErrorEnd" hidden="true">
+          <%- include("./errorRequest") %>
+        </div>
+
+        <div id="mFVLoading" hidden="true">
+          <h3 class="text-center">Salvando</h3>
+          <%- include("./loading") %>
+        </div>
+        <div id="mFVContent">
+          <h5>O que fazer com objetos que não foram encontrados?</h5>
+          <div class="row">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              <div class="col">
+                <div
+                  class="card"
+                  id="keepHere"
+                  name="notFoundObjects"
+                  onclick="notFoundObjects(0, this)"
+                >
+                  <div class="card-body">
+                    <h5 class="card-title">Manter os objetos desta sala</h5>
+                    <p class="card-text">
+                      O sistema irá identificar e registrar que os objetos não
+                      foram encontrados, mas eles não serão movidos, apenas
+                      serão marcados como desaparecidos e aparecerá na lista de
+                      todas as salas para que caso alguém o encontre, ele seja
+                      facilmente identificado e devolvido ao local.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div
+                  class="card"
+                  id="moveToAnother"
+                  name="notFoundObjects"
+                  onclick="notFoundObjects(1, this)"
+                >
+                  <div class="card-body">
+                    <h5 class="card-title">Mover os objetos para outra sala</h5>
+                    <p class="card-text">
+                      O sistema irá identificar e registrar que os objetos não
+                      foram encontrados, mas caso tenha registro de movimentação
+                      destes objetos para outro ambiente, lá será o novo local
+                      deles. Caso não tenha registro de movimentação desses
+                      objetos. eles serão marcados como desaparecidos e
+                      aparecerá na lista de todas as salas para que caso alguém
+                      o encontre, ele seja facilmente identificado e devolvido
+                      ao local.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-5">
+            <h5>O que fazer com objetos que estão em local errado?</h5>
+          </div>
+          <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+              <div
+                class="card"
+                id="keepThere"
+                name="wrongPlaceObjects"
+                onclick="wrongPlaceObjects(0, this)"
+              >
+                <div class="card-body">
+                  <h5 class="card-title">
+                    Manter objetos em sala onde deveriam estar
+                  </h5>
+                  <p class="card-text">
+                    Os objetos de que pertencem a outro ambiente que foram
+                    encontrados nesta sala permanecerão lá, mas será adicionada
+                    uma observação indicando que o objeto foi encontrado aqui,
+                    para facilitar a verificação da sala a qual este objeto
+                    pertence.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div
+                class="card"
+                id="moveHere"
+                name="wrongPlaceObjects"
+                onclick="wrongPlaceObjects(1, this)"
+              >
+                <div class="card-body">
+                  <h5 class="card-title">Mover os objetos para esta sala</h5>
+                  <p class="card-text">
+                    Os objetos de que pertencem a outro ambiente que foram
+                    encontrados nesta sala serão movidos para cá, logo os
+                    objetos passarão a pertencer a essa sala.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="mFVFooter">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button type="button" class="btn btn-primary" onclick="save()">
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

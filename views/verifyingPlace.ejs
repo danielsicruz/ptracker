@@ -36,7 +36,8 @@
   </head>
 
   <body>
-    <%- include('./components/themeSwitch') %>
+    <%- include('./components/modalFinishVerify') %> <%-
+    include('./components/themeSwitch') %>
 
     <header
       class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow"
@@ -108,40 +109,25 @@
                     placeholder="Número de Id"
                     aria-label="Número de identificação do objeto"
                   />
-                  <button class="btn btn-outline-secondary" type="button">
-                    Verificar
+                  <button
+                    class="btn btn-success"
+                    type="button"
+                    onclick="switchingInsert(this)"
+                  >
+                    Inserindo
                   </button>
                 </div>
                 <button
                   class="btn btn-outline-success px-4 col-3 mx-auto"
                   type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#finishingVerifyModal"
                 >
                   Finalizar
                 </button>
               </div>
               <div id="objectList" class="row row-cols-1 row-cols-md-3 g-4">
-                <div
-                  aria-label="Orange and tan hamster running in a metal wheel"
-                  role="img"
-                  class="wheel-and-hamster top-50 start-50"
-                >
-                  <div class="wheel"></div>
-                  <div class="hamster">
-                    <div class="hamster__body">
-                      <div class="hamster__head">
-                        <div class="hamster__ear"></div>
-                        <div class="hamster__eye"></div>
-                        <div class="hamster__nose"></div>
-                      </div>
-                      <div class="hamster__limb hamster__limb--fr"></div>
-                      <div class="hamster__limb hamster__limb--fl"></div>
-                      <div class="hamster__limb hamster__limb--br"></div>
-                      <div class="hamster__limb hamster__limb--bl"></div>
-                      <div class="hamster__tail"></div>
-                    </div>
-                  </div>
-                  <div class="spoke"></div>
-                </div>
+                <%- include('./components/loading') %>
               </div>
             </div>
           </div>
@@ -184,8 +170,8 @@
           "<td>" +
           data.Object.name +
           "</td>" +
-          "<td>" +
-          data.isThere +
+          '<td id="iconCheck-'+data.Object.id+'">'+
+          '<i class="bi bi-dash-square"></i>' +
           "</td>" +
           "<td>" +
           data.Object.imagePath +
@@ -195,18 +181,41 @@
       }
       const insertBox = document.getElementById("insertBox");
       const objects = Array();
+      const whatDo = { notFoundObjects: 0, wrongPlaceObjects: 0 };
+      let inserting = true;
+
+      function switchingInsert(element) {
+        if (inserting) {
+          inserting = false;
+          element.innerHTML = 'Removendo'
+          element.setAttribute("class", "btn btn-danger")
+        }else{
+          inserting = true;
+          element.innerHTML = 'Inserindo'
+          element.setAttribute("class", "btn btn-success")
+        }
+      }
       function databuilder(data) {
         const found = objects.includes(data);
-        if(!found){
-        objects.push(data);
+        const regex = /^[0-9a-zA-Z]+$/;
+        if (!found && regex.test(data) && inserting) {
+          objects.push(data);
+          const row = document.getElementById(data);
+          if(row){
+            row.setAttribute("class", "table-success");
+            document.getElementById(`iconCheck-${data}`).innerHTML = '<i class="bi bi-check-square"></i>'
+          }
         }
-        console.log(objects);
+        if(found && regex.test(data) && !inserting){
+          objects.splice(objects.indexOf(data),1)
+          const row = document.getElementById(data);
+          if(row)
+            row.removeAttribute("class");
+            document.getElementById(`iconCheck-${data}`).innerHTML = '<i class="bi bi-dash-square"></i>'
+        }
         insertBox.value = "";
         insertBox.focus();
-
-        const row = document.getElementById(data)
-        row.setAttribute("class", "table-success");
-
+        console.log(objects)
       }
       insertBox.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.keyCode === 13) {
@@ -220,12 +229,62 @@
         const table = document.getElementById("objectTable");
         const tableBody = document.getElementById("objectTBody");
         const data = <%- JSON.stringify(datas) %>
-         data.forEach((object) => {
+        data.forEach((object) => {
           tableBody.innerHTML += buildTableRow(object);
         });
+        notFoundObjects(0, document.getElementById("keepHere"))
+        wrongPlaceObjects(0, document.getElementById("keepThere"))
+      });
+      const modal = document.getElementById("finishingVerifyModal")
+      modal.addEventListener("shown.bs.modal",()=>{
+        document.getElementById("finishingVerifyModalLabel").innerHTML = `Você encontrou ${objects.length} de `+ <%- datas.length %> +` objetos nesta sala`
       });
       function verifyAmbient(id) {
         window.location = "/places/verifying/" + id;
+      }
+      function handleObjects(value, element, attributeName) {
+        document.getElementsByName(attributeName).forEach((e) => {
+          e.setAttribute("class", "card");
+        });
+        if (document.documentElement.getAttribute("data-bs-theme") === "dark") {
+          element.setAttribute("class", "card selected text-dark");
+        } else {
+          element.setAttribute("class", "card selected");
+        }
+        whatDo[attributeName] = value;
+        console.log(whatDo);
+      }
+      function notFoundObjects(value, element) {
+        handleObjects(value, element, "notFoundObjects");
+      }
+      function wrongPlaceObjects(value, element) {
+        handleObjects(value, element, "wrongPlaceObjects");
+      }
+      function save() {
+        const modalContent = document.getElementById("mFVContent");
+        modalContent.setAttribute("hidden","true");
+        document.getElementById("mFVLoading").removeAttribute("hidden");
+        document.getElementById("mFVFooter").setAttribute("hidden","true")
+        const data = {
+          "notFoundObjects":whatDo.notFoundObjects,
+          "wrongPlaceObjects":whatDo.wrongPlaceObjects,
+          "objects":objects
+      }
+        fetch("/api/v1/check/"+<%- placeData.id %>, {
+          method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        }).then(response =>{
+          if(response.status ===  201 || response.status ===  200){
+            document.getElementById("mFVLoading").setAttribute("hidden","true")
+            document.getElementById("mFVSuccessEnd").removeAttribute("hidden")
+          }else{
+            document.getElementById("mFVLoading").setAttribute("hidden","true")
+            document.getElementById("mFVErrorEnd").removeAttribute("hidden")
+          }
+        });
       }
     </script>
     <script src="/assets/js/dashboard.js"></script>

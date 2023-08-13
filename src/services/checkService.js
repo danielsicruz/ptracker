@@ -3,6 +3,9 @@ const Place = require("../models/mPlace");
 const User = require("../models/mUser");
 exports.create = async (req, res) => {
     data = req.body;
+    const placeId = req.params.id;
+    console.log(data);
+    return res.status(201).json();
     if (true) {
         check = await checkController.create(data);
         return res.status(201).json(check);

@@ -7,7 +7,6 @@ router.get("/login", (req, res) => {
     res.render('login');
 });
 router.get("/home", async (req, res) => {
-    const homeData = await data.place.data();
     res.render('home', {"pageName":"Home"});
 });
 router.get("/places", async (req, res) => {

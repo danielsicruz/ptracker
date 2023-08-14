@@ -586,5 +586,29 @@ VALUES
         '2023-05-08 23:45',
         '2023-05-08 23:45'
     );
+INSERT INTO
+    Movements(
+        `idObject`,
+        `fromIdPlace`,
+        `toIdPlace`,
+        `whoChanged`,
+        `temporary`,
+        `whenBack`,
+        `isBack`,
+        `createdAt`,
+        `updatedAt`
+    )
+VALUES
+    (
+        1310526,
+        3,
+        4,
+        '2cf96536-daf0-41a6-8c3b-01935834a7c3',
+        1,
+        '2023-06-13 23:45',
+        0,
+        '2023-05-12 23:45',
+        '2023-05-12 23:45'
+    );
 
 -- End Movement dummy data

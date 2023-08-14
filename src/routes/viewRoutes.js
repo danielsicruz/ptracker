@@ -19,10 +19,12 @@ router.get("/places", async (req, res) => {
 router.get("/places/verifying/:id", async (req, res) => {
     const objects = await data.placesVerifying.data(req.params.id);
     const placeData = await data.placesVerifying.place(req.params.id);
+    const notFound = await data.placesVerifying.notFound();
     res.render('verifyingPlace', {
         "datas": objects,
         "pageName": "Verificando "+placeData.name,
-        "placeData": placeData
+        "placeData": placeData,
+        "notFound": notFound,
     });
 });
 

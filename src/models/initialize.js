@@ -22,7 +22,7 @@ ObjectPlace.belongsTo(Place,{foreignKey:'idPlace'});
 Place.hasMany(ObjectPlace,{as:'place',foreignKey:'idObject'})
 
 Movement.belongsTo(Object,{foreignKey:'idObject'});
-Object.hasMany(Movement, {as:'object',foreignKey:'idObject'});
+Object.hasMany(Movement, {as:'movement',foreignKey:'idObject'});
 Movement.belongsTo(Place, {foreignKey:'fromIdPlace'});
 Place.hasMany(Movement, {as:'fromIdPlace', foreignKey:'fromIdPlace'});
 Movement.belongsTo(Place, {foreignKey:'toIdPlace'});

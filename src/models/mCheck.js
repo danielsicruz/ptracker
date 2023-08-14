@@ -18,7 +18,17 @@ const Check = database.define('Check', {
     missingObjects: {
         type: Sequelize.INTEGER,
         allowNull: false,
-    }
+    },
+    notFoundObjects: {
+        type:Sequelize.BOOLEAN,
+        allowNull:false,
+        default:0
+    },
+    wrongPlaceObjects: {
+        type:Sequelize.BOOLEAN,
+        allowNull:false,
+        default:0
+    },
 });
 
 module.exports = Check

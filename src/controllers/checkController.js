@@ -7,6 +7,8 @@ exports.create = async (data) => {
         objectsToFind: data.objectsToFind,
         foundObjects: data.foundObjects,
         missingObjects: data.missingObjects,
+        notFoundObjects: data.notFoundObjects,
+        wrongPlaceObjects: data.wrongPlaceObjects,
     });
 
     return response;
@@ -43,6 +45,8 @@ exports.update = async (data) => {
     tochange = data.whoChanged ? data.whoChanged : tochange.whoChanged;
     tochange = data.foundObjects ? data.foundObjects : tochange.foundObjects;
     tochange = data.missingObjects ? data.missingObjects : tochange.missingObjects;
+    tochange = data.notFoundObjects ? data.notFoundObjects : tochange.notFoundObjects;
+    tochange = data.wrongPlaceObjects ? data.wrongPlaceObjects : tochange.wrongPlaceObjects;
 
     response = await tochange.save();
     return response;

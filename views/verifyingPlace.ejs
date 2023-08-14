@@ -141,151 +141,69 @@
       integrity="sha384-gdQErvCNWvHQZj6XZM0dNsAoY4v+j5P1XDpNkcM3HJG1Yx04ecqIHk7+4VBOCHOG"
       crossorigin="anonymous"
     ></script>
+    <script src="/assets/js/verifyingPlace.js"></script>
+
     <script>
-      function tableBuilder() {
-        return (
-          '<table class="table" id="objectTable">' +
-          "<thead>" +
-          "<tr>" +
-          '<th scope="col">#</th>' +
-          '<th scope="col">Nome</th>' +
-          '<th scope="col">Verificado</th>' +
-          '<th scope="col">Imagem</th>' +
-          "</tr>" +
-          "</thead>" +
-          '<tbody id="objectTBody">' +
-          "</tbody>" +
-          "</table>"
-        );
-      }
-
-      function buildTableRow(data) {
-        return (
-          '<tr id="' +
-          data.Object.id +
-          '">' +
-          "<td>" +
-          data.Object.id +
-          "</td>" +
-          "<td>" +
-          data.Object.name +
-          "</td>" +
-          '<td id="iconCheck-'+data.Object.id+'">'+
-          '<i class="bi bi-dash-square"></i>' +
-          "</td>" +
-          "<td>" +
-          data.Object.imagePath +
-          "</td>" +
-          "</tr>"
-        );
-      }
-      const insertBox = document.getElementById("insertBox");
-      const objects = Array();
-      const whatDo = { notFoundObjects: 0, wrongPlaceObjects: 0 };
-      let inserting = true;
-
-      function switchingInsert(element) {
-        if (inserting) {
-          inserting = false;
-          element.innerHTML = 'Removendo'
-          element.setAttribute("class", "btn btn-danger")
-        }else{
-          inserting = true;
-          element.innerHTML = 'Inserindo'
-          element.setAttribute("class", "btn btn-success")
-        }
-      }
-      function databuilder(data) {
-        const found = objects.includes(data);
-        const regex = /^[0-9a-zA-Z]+$/;
-        if (!found && regex.test(data) && inserting) {
-          objects.push(data);
-          const row = document.getElementById(data);
-          if(row){
-            row.setAttribute("class", "table-success");
-            document.getElementById(`iconCheck-${data}`).innerHTML = '<i class="bi bi-check-square"></i>'
-          }
-        }
-        if(found && regex.test(data) && !inserting){
-          objects.splice(objects.indexOf(data),1)
-          const row = document.getElementById(data);
-          if(row)
-            row.removeAttribute("class");
-            document.getElementById(`iconCheck-${data}`).innerHTML = '<i class="bi bi-dash-square"></i>'
-        }
-        insertBox.value = "";
-        insertBox.focus();
-        console.log(objects)
-      }
-      insertBox.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.keyCode === 13) {
-          databuilder(insertBox.value);
-        }
-      });
       document.addEventListener("DOMContentLoaded", () => {
-        const searchBar = document.getElementById("searchBar");
-        const objectList = document.getElementById("objectList");
-        objectList.innerHTML = tableBuilder();
-        const table = document.getElementById("objectTable");
-        const tableBody = document.getElementById("objectTBody");
-        const data = <%- JSON.stringify(datas) %>
-        data.forEach((object) => {
-          tableBody.innerHTML += buildTableRow(object);
-        });
-        notFoundObjects(0, document.getElementById("keepHere"))
-        wrongPlaceObjects(0, document.getElementById("keepThere"))
+                const searchBar = document.getElementById("searchBar");
+                const objectList = document.getElementById("objectList");
+                objectList.innerHTML = tableBuilder();
+                const table = document.getElementById("objectTable");
+                const tableBody = document.getElementById("objectTBody");
+                const data = <%- JSON.stringify(datas) %>;
+                const notFound = <%- JSON.stringify(notFound) %>;
+                    console.log(data);
+                data.forEach((object) => {
+                    tableBody.innerHTML += buildTableRow(object);
+                });
+                notFound.forEach((object) => {
+                  const row = document.getElementById(object.Object.id);
+                    if(row){
+                      buildTableExistentRow(object, row)
+                    }else{
+                    tableBody.innerHTML += buildTableRow(object);
+                    }
+                });
+                notFoundObjects(0, document.getElementById("keepHere"))
+                wrongPlaceObjects(0, document.getElementById("keepThere"))
+            });
+                        function save() {
+                      const modalContent = document.getElementById("mFVContent");
+                      modalContent.setAttribute("hidden", "true");
+                      document.getElementById("mFVLoading").removeAttribute("hidden");
+                      document.getElementById("mFVFooter").setAttribute("hidden", "true")
+                      document.getElementById("mFVErrorEnd").setAttribute("hidden", "true")
+                      const data = {
+                          "notFoundObjects": whatDo.notFoundObjects,
+                          "wrongPlaceObjects": whatDo.wrongPlaceObjects,
+                          "objects": objects
+                      }
+                      try {
+                        fetch("/api/v1/check/" +  <%- placeData.id %>, {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify(data)
+                      }).then(response => {
+                          if (response.status === 201 || response.status === 200) {
+                              document.getElementById("mFVLoading").setAttribute("hidden", "true")
+                              document.getElementById("mFVSuccessEnd").removeAttribute("hidden")
+                          } else {
+                              document.getElementById("mFVLoading").setAttribute("hidden", "true")
+                              document.getElementById("mFVErrorEnd").removeAttribute("hidden")
+                          }
+                      });
+                      } catch (error) {
+                        document.getElementById("mFVLoading").setAttribute("hidden", "true")
+                              document.getElementById("mFVErrorEnd").removeAttribute("hidden")
+                      }
+
+                  }
+
+            modal.addEventListener("shown.bs.modal", () => {
+          document.getElementById("finishingVerifyModalLabel").innerHTML = `Você encontrou ${objects.length} de ` + <%- datas.length %> +` objetos nesta sala`
       });
-      const modal = document.getElementById("finishingVerifyModal")
-      modal.addEventListener("shown.bs.modal",()=>{
-        document.getElementById("finishingVerifyModalLabel").innerHTML = `Você encontrou ${objects.length} de `+ <%- datas.length %> +` objetos nesta sala`
-      });
-      function verifyAmbient(id) {
-        window.location = "/places/verifying/" + id;
-      }
-      function handleObjects(value, element, attributeName) {
-        document.getElementsByName(attributeName).forEach((e) => {
-          e.setAttribute("class", "card");
-        });
-        if (document.documentElement.getAttribute("data-bs-theme") === "dark") {
-          element.setAttribute("class", "card selected text-dark");
-        } else {
-          element.setAttribute("class", "card selected");
-        }
-        whatDo[attributeName] = value;
-        console.log(whatDo);
-      }
-      function notFoundObjects(value, element) {
-        handleObjects(value, element, "notFoundObjects");
-      }
-      function wrongPlaceObjects(value, element) {
-        handleObjects(value, element, "wrongPlaceObjects");
-      }
-      function save() {
-        const modalContent = document.getElementById("mFVContent");
-        modalContent.setAttribute("hidden","true");
-        document.getElementById("mFVLoading").removeAttribute("hidden");
-        document.getElementById("mFVFooter").setAttribute("hidden","true")
-        const data = {
-          "notFoundObjects":whatDo.notFoundObjects,
-          "wrongPlaceObjects":whatDo.wrongPlaceObjects,
-          "objects":objects
-      }
-        fetch("/api/v1/check/"+<%- placeData.id %>, {
-          method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-        }).then(response =>{
-          if(response.status ===  201 || response.status ===  200){
-            document.getElementById("mFVLoading").setAttribute("hidden","true")
-            document.getElementById("mFVSuccessEnd").removeAttribute("hidden")
-          }else{
-            document.getElementById("mFVLoading").setAttribute("hidden","true")
-            document.getElementById("mFVErrorEnd").removeAttribute("hidden")
-          }
-        });
-      }
     </script>
     <script src="/assets/js/dashboard.js"></script>
   </body>

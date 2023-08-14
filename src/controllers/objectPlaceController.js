@@ -6,6 +6,7 @@ exports.create = async (data) => {
         idPlace: data.idPlace,
         stillThere: data.stillThere,
         movedBy: data.movedBy,
+        lastCheck: data.lastCheck
     });
 
     return response;
@@ -40,6 +41,7 @@ exports.update = async (data) => {
     tochange = data.idPlace ? data.idPlace : tochange.idPlace;
     tochange = data.stillThere ? data.stillThere : tochange.stillThere; //Test because is boolean
     tochange = data.movedBy ? data.movedBy : tochange.movedBy;
+    tochange = data.lastCheck ? data.lastCheck : tochange.lastCheck;
 
     response = await tochange.save();
     return response;

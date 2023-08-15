@@ -6,7 +6,8 @@ exports.create = async (data) => {
         idPlace: data.idPlace,
         stillThere: data.stillThere,
         movedBy: data.movedBy,
-        lastCheck: data.lastCheck
+        lastCheck: data.lastCheck,
+        whereIs: data.whereIs
     });
 
     return response;
@@ -35,15 +36,24 @@ exports.findById = async (id) => {
     });
 }
 
-exports.update = async (data) => {
+exports.updateOne = async (data) => {
     const tochange = ObjectPlace.findByPk(data.id);
     tochange = data.idObject ? data.idObject : tochange.idObject;
     tochange = data.idPlace ? data.idPlace : tochange.idPlace;
     tochange = data.stillThere ? data.stillThere : tochange.stillThere; //Test because is boolean
     tochange = data.movedBy ? data.movedBy : tochange.movedBy;
     tochange = data.lastCheck ? data.lastCheck : tochange.lastCheck;
+    tochange = data.whereIs ? data.whereIs : tochange.whereIs;
 
     response = await tochange.save();
+    return response;
+}
+
+exports.updateMultiple = async (data,where) => {
+    response = await ObjectPlace.update(
+        data,
+        {where:where},
+    );
     return response;
 }
 

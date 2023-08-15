@@ -24,8 +24,8 @@ function buildTableExistentRow(data, row) {
         whenBack = movement.whenBack.toString().split('-');
         document.getElementById('observations-' + data.Object.id).innerHTML = 'Devolução pendente, foi movimentado para ' +
             movement.Place.name + ' por ' + movement.User.name +
-            ' e a devolução não foi registrada. A previsão do empréstimo era de ' + createdAt[1] + '/' + createdAt[2].split('T')[0] +
-            '/' + createdAt[0] + ' até ' + whenBack[1] + '/' + whenBack[2].split('T')[0] + '/' + whenBack[0];
+            ' e a devolução não foi registrada. A previsão do empréstimo era de ' + createdAt[2].split('T')[0] + '/' + createdAt[1] +
+            '/' + createdAt[0] + ' até ' + whenBack[2].split('T')[0] + '/' + whenBack[1] + '/' + whenBack[0];
         row.setAttribute("class", "table-danger");
     }
 }

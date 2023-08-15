@@ -22,12 +22,12 @@ const Check = database.define('Check', {
     notFoundObjects: {
         type:Sequelize.BOOLEAN,
         allowNull:false,
-        default:0
+        defaultValue:0
     },
     wrongPlaceObjects: {
         type:Sequelize.BOOLEAN,
         allowNull:false,
-        default:0
+        defaultValue:0
     },
 });
 

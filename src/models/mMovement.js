@@ -8,11 +8,13 @@ const Movement = database.define('Movement', {
     },
     whenBack:{
         type:Sequelize.DATE,
-        allowNull: true
+        allowNull: true,
+        defaultValue: null,
     },    
     isBack:{
         type:Sequelize.BOOLEAN,
-        allowNull: true
+        allowNull: true,
+        defaultValue: null,
     }
 });
 

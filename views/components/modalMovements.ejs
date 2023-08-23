@@ -1,0 +1,49 @@
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="movementsModal"
+  tabindex="-1"
+  aria-labelledby="movementsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="movementsModalLabel">Movimentação</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div id="movementsData">
+          <table class="table" id="movementsTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Mov. de</th>
+                <th scope="col">Mov. para</th>
+                <th scope="col">Levado por</th>
+                <th scope="col">Levado em</th>
+                <th scope="col">Temporário</th>
+                <th scope="col">Data para devolução</th>
+                <th scope="col">Devolvido</th>
+                <th scope="col">Devolvido em</th>
+              </tr>
+            </thead>
+            <tbody id="movementsBody">
+                
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

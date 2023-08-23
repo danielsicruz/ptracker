@@ -18,11 +18,11 @@ function tableBuilder() {
 
 function buildTableExistentRow(data, row) {
     let movement;
-    if (data.Object.movement.length != 0) {
-        movement = data.Object.movement[data.Object.movement.length - 1];
+    if (data.object.movement.length != 0) {
+        movement = data.object.movement[data.object.movement.length - 1];
         createdAt = movement.createdAt.toString().split('-');
         whenBack = movement.whenBack.toString().split('-');
-        document.getElementById('observations-' + data.Object.id).innerHTML = 'Devolução pendente, foi movimentado para ' +
+        document.getElementById('observations-' + data.object.id).innerHTML = 'Devolução pendente, foi movimentado para ' +
             movement.Place.name + ' por ' + movement.User.name +
             ' e a devolução não foi registrada. A previsão do empréstimo era de ' + createdAt[2].split('T')[0] + '/' + createdAt[1] +
             '/' + createdAt[0] + ' até ' + whenBack[2].split('T')[0] + '/' + whenBack[1] + '/' + whenBack[0];
@@ -32,70 +32,70 @@ function buildTableExistentRow(data, row) {
 
 function buildTableRow(data) {
     let movement;
-    if (data.Object.movement.length != 0) {
-        movement = data.Object.movement[data.Object.movement.length - 1];
+    if (data.object.movement.length != 0) {
+        movement = data.object.movement[data.object.movement.length - 1];
         return (
             '<tr id="' +
-            data.Object.id +
+            data.object.id +
             '">' +
             "<td>" +
-            data.Object.id +
+            data.object.id +
             "</td>" +
             "<td>" +
-            data.Object.name +
+            data.object.name +
             "</td>" +
-            '<td id="iconCheck-' + data.Object.id + '">' +
+            '<td id="iconCheck-' + data.object.id + '">' +
             '<i class="bi bi-dash-square"></i>' +
             "</td>" +
-            '<td id="observations-' + data.Object.id + '">' +
+            '<td id="observations-' + data.object.id + '">' +
             'Devolução pendente, foi movimentado para ' + movement.Place.name + ' por ' + movement.User.name + ' e a devolução não foi registrada' +
             "</td>" +
             "<td>" +
-            data.Object.imagePath +
+            data.object.imagePath +
             "</td>" +
             "</tr>"
         );
-    }else if (data.isThere == false) {
-        movement = data.Object.movement[data.Object.movement.length - 1];
+    } else if (data.isThere == false) {
+        movement = data.object.movement[data.object.movement.length - 1];
         return (
             '<tr id="' +
-            data.Object.id +
+            data.object.id +
             '"class="table-danger">' +
             "<td>" +
-            data.Object.id +
+            data.object.id +
             "</td>" +
             "<td>" +
-            data.Object.name +
+            data.object.name +
             "</td>" +
-            '<td id="iconCheck-' + data.Object.id + '">' +
+            '<td id="iconCheck-' + data.object.id + '">' +
             '<i class="bi bi-dash-square"></i>' +
             "</td>" +
-            '<td id="observations-' + data.Object.id + '">' +
-            'Objeto marcado como perdido, ele deveria estar em '+ data.Place.name+
+            '<td id="observations-' + data.object.id + '">' +
+            'Objeto marcado como perdido, ele deveria estar em ' + data.place.name + ' em ' + data.place.contextPlace.name +
             "</td>" +
             "<td>" +
-            data.Object.imagePath +
+            data.object.imagePath +
             "</td>" +
             "</tr>"
         );
     }
     return (
         '<tr id="' +
-        data.Object.id +
+        data.object.id +
         '">' +
         "<td>" +
-        data.Object.id +
+        data.object.id +
         "</td>" +
         "<td>" +
-        data.Object.name +
+        data.object.name +
         "</td>" +
-        '<td id="iconCheck-' + data.Object.id + '">' +
+        '<td id="iconCheck-' + data.object.id + '">' +
         '<i class="bi bi-dash-square"></i>' +
         "</td>" +
-        '<td id="observations-' + data.Object.id + '">' +
+        '<td id="observations-' + data.object.id + '">' +
         "</td>" +
         "<td>" +
-        data.Object.imagePath +
+        data.object.imagePath +
         "</td>" +
         "</tr>"
     );
@@ -136,7 +136,7 @@ function databuilder(data) {
     }
     insertBox.value = "";
     insertBox.focus();
-    console.log(objects)
+    //console.log(objects)
 }
 insertBox.addEventListener("keydown", (event) => {
     if (event.key === "Enter" || event.keyCode === 13) {
@@ -159,7 +159,7 @@ function handleObjects(value, element, attributeName) {
         element.setAttribute("class", "card selected");
     }
     whatDo[attributeName] = value;
-    console.log(whatDo);
+    //console.log(whatDo);
 }
 function notFoundObjects(value, element) {
     handleObjects(value, element, "notFoundObjects");

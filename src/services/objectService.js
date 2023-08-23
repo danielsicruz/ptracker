@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.select = async (req,res) => {
+exports.select = async (req, res) => {
     data = req.body;
     filter = {
         name: data.name ? data.name : null,
@@ -27,7 +27,7 @@ exports.select = async (req,res) => {
         if (filter[key] == null) {
             delete filter[key];
         }
-        
+
     });
 
     if (req.query.filter == undefined) {
@@ -54,6 +54,17 @@ exports.select = async (req,res) => {
         }
     }
 }
+
+exports.getOne = async (req, res) => {
+    const id = req.params.id;
+    const response = await objectController.selectOne({ id: id }, null);
+    if (response) {
+        return res.status(200).json(response);
+    } else {
+        return res.status(404).json({ "message": "Object not found" });
+    }
+}
+
 exports.update = async (req, res) => {
     data = req.body;
     data.id = req.params.id;

@@ -14,13 +14,13 @@ exports.select = async (filters = null, res) => {
     let response;
     if (filters == null) {
 
-        response = await User.findAll();
+        response = await Object.findAll();
         return response;
     } else {
         //separate the filters here
         //We can build the filter out of the function and just put in findAll later
 
-        response = await User.findAll({
+        response = await Object.findAll({
             where: filters
         });
         return response;
@@ -29,14 +29,14 @@ exports.select = async (filters = null, res) => {
 }
 
 exports.selectOne = async (filters = null, res) => {
-    response = await User.findOne({
+    response = await Object.findOne({
         where: filters
     });
     return response;
 }
 
 exports.update = async (data) => {
-    const tochange = await User.findByPk(data.id);
+    const tochange = await Object.findByPk(data.id);
 
     tochange.name = data.name ? data.name : tochange.name;
     tochange.description = data.description ? data.description : tochange.description;

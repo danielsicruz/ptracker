@@ -152,12 +152,11 @@
                 const tableBody = document.getElementById("objectTBody");
                 const data = <%- JSON.stringify(datas) %>;
                 const notFound = <%- JSON.stringify(notFound) %>;
-                    console.log(data);
                 data.forEach((object) => {
                     tableBody.innerHTML += buildTableRow(object);
                 });
                 notFound.forEach((object) => {
-                  const row = document.getElementById(object.Object.id);
+                  const row = document.getElementById(object.object.id);
                     if(row){
                       buildTableExistentRow(object, row)
                     }else{

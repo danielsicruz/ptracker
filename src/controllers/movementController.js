@@ -29,6 +29,12 @@ exports.select = async (filters) => {
     return response;
 }
 
+exports.joins = async (data) => {
+    let response;
+    response = await Movement.findAll(data);
+    return response;
+}
+
 exports.selectOne = async (filters) => {
     response = await Movement.findOne({
         where: filters

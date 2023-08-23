@@ -17,11 +17,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.json());
 
-app.use("/api",routes);
+app.use("/api", routes);
 
 app.use('/', views)
+app.get('/', (req, res) => {
+    res.redirect("/home");
+});
 
-app.listen(port, () =>{
+app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
-    
+
 })

@@ -505,27 +505,6 @@ INSERT INTO
     )
 VALUES
     (
-        1310524,
-        3,
-        1,
-        '8f74b043-c036-4b1b-ac6c-c2231648258c',
-        'a7893d4a-8f85-4af0-82ce-05b4aac30b06',
-        '2023-05-08 23:45',
-        '2023-05-08 23:45'
-    );
-
-INSERT INTO
-    ObjectPlaces(
-        `idObject`,
-        `idPlace`,
-        `isThere`,
-        `movedBy`,
-        `lastCheck`,
-        `createdAt`,
-        `updatedAt`
-    )
-VALUES
-    (
         1310526,
         3,
         1,

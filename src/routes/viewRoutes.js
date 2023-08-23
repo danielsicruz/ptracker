@@ -27,5 +27,8 @@ router.get("/places/verifying/:id", async (req, res) => {
         "notFound": notFound,
     });
 });
+router.get("/objects/verifying", async (req, res) => {
+    res.render('verifyingObject', {"pageName":"Verificando objetos"});
+});
 
 module.exports = router;

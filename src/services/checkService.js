@@ -12,8 +12,9 @@ exports.create = async (req, res) => {
     const objectsToFind = await objectPlaceController.select({ idPlace: idPlace });
 
     const wrongPlaceObjectsid = Array();
-
-    //If option selected is move not foundobjects to another room
+    const idsToThere1 = Array();
+    const idsToThere0 = Array();
+    //If option selected is move not found objects to another room
     if (data.notFoundObjects === 1) {
         const wrongPlaceObjectsToMovements = Array();
         //Create a query to find no back movements of this room objects
@@ -24,28 +25,40 @@ exports.create = async (req, res) => {
         }
         //Select them. Deeerrrr
         const movements = await movementController.select(queryBuilder);
+
         //I don't need to say what a forEach does.
         objectsToFind.forEach(object => {
             //If the object is in the array of objects to find
             if (data.objects.includes(object.idObject.toString())) {
                 //Count the number of matches and set that object is there
                 objectsMatches++;
-                object.isThere = 1;
+                idsToThere1.push(object.idObject);
                 //If the object is in the array of movements
             } else if (movements.length > 0) {
                 //For each movement and push to wrongPlaceObjects
                 movements.forEach(movement => {
-                    if (movement.idObject === object.idObject)
+                    //If have not retorned object out of this place (verified place)
+                    if (movement.idObject === object.idObject) {
+                        //Push to wrongPlaceObjectsToMovements to be moved to another place later
                         wrongPlaceObjectsToMovements.push({ idObject: object.idObject, whereIs: movement.toIdPlace });
-                    wrongPlaceObjectsid.push({ idObject: object.idObject, whereIs: movement.toIdPlace });
+                        wrongPlaceObjectsid.push({ idObject: object.idObject, whereIs: movement.toIdPlace });
+                    }
+                    else {
+                        //Set isThere to 0.
+                        idsToThere0.push(object.idObject);
+                        //Else push to wrongPlaceObjectsid to be identfied as missing
+                        wrongPlaceObjectsid.push({ idObject: object.idObject });
+                    }
                 });
             } else {
-                //Set isThere to 0. Deeeerrrr
-                //And push to wrongPlaceObjects
-                object.isThere = 0;
+                //Set isThere to 0.
+                idsToThere0.push(object.idObject);
+                //And push to wrongPlaceObjectsid
                 wrongPlaceObjectsid.push({ idObject: object.idObject });
             }
         });
+        //Update isThere on database
+
         //Move not found objects to another room if have a no back object movement
         const movementQueryBuilder = Array();
         wrongPlaceObjectsToMovements.forEach(object => {
@@ -58,28 +71,53 @@ exports.create = async (req, res) => {
 
             });
         });
-        await movementController.bulkCreate(movementQueryBuilder)
+        console.log("Bulk Create on Movement | 61:");
+        console.log(movementController.bulkCreate(movementQueryBuilder));
     } else {
         //Just set the isThere to 0 for all not found objects and push
         objectsToFind.forEach(object => {
-            object.isThere = 0;
             if (data.objects.includes(object.idObject.toString())) {
                 objectsMatches++;
                 object.isThere = 1;
+                idsToThere1.push(object.idObject);
+                console.log('Id para 1', idsToThere1);
             } else {
-                wrongPlaceObjectsid.push({idObject : object.idObject});
+                wrongPlaceObjectsid.push({ idObject: object.idObject });
+                idsToThere0.push(object.idObject);
+                console.log('Id para 0', idsToThere0);
             }
 
         });
     }
+    //Update isThere on database
+    if (idsToThere1.length > 0) {
+        await objectPlaceController.updateMultiple({ isThere: 1 }, { idObject: { [Op.or]: idsToThere1 } });
+    }
+    if (idsToThere0.length > 0) {
+        await objectPlaceController.updateMultiple({ isThere: 0 }, { idObject: { [Op.or]: idsToThere0 } });
+    }
+    //Create a check on database.
+    const checkBuilder = {
+        objectsToFind: objectsToFind.length,
+        foundObjects: data.objects.length,
+        missingObjects: (objectsToFind.length - objectsMatches),
+        whoChecked: '2cf96536-daf0-41a6-8c3b-01935834a7c3',
+        whereChecked: parseInt(idPlace),
+        notFoundObjects: data.notFoundObjects,
+        wrongPlaceObjects: data.wrongPlaceObjects
+    }
+    const check = await checkController.create(checkBuilder);
+
     //If option selected is keep wrong place objects on their place (not this place dude, their original place)
     if (data.wrongPlaceObjects === 0) {
         //Set isThere to 0 for all wrong place objects and update on database
         const whereQueryBuilder = {
             idObject: { [Op.or]: wrongPlaceObjectsid },
         };
-        await objectPlaceController.updateMultiple({ whereIs: idPlace, isThere: 0 }, whereQueryBuilder);
-
+        if (wrongPlaceObjectsid.length > 0) {
+            console.log("Multiple Update on ObjectPlace | 96:");
+            console.log(await objectPlaceController.updateMultiple({ whereIs: idPlace, isThere: 0, lastCheck: check.id }, whereQueryBuilder));
+        }
     }
     else {
         //Bring objects to this place
@@ -94,28 +132,31 @@ exports.create = async (req, res) => {
             });
         }
         );
-        movementController.bulkCreate(queryBuilder);
+        const objectPlaceQueryBuilder = {
+            idObject: { wrongPlaceObjectsid }
+        }
+        if (wrongPlaceObjectsid.length > 0) {
+            console.log("Bulk Create on Movement | 117:");
+            console.log(await movementController.bulkCreate(queryBuilder));
+            console.log("Multiple Update on ObjectPlace | 119:");
+            console.log(await objectPlaceController.updateMultiple(
+                {
+                    whereIs: idPlace,
+                    isThere: 1,
+                    idPlace: idPlace,
+                    movedBy: '2cf96536-daf0-41a6-8c3b-01935834a7c3', //Authenticate
+                    lastCheck: check.id,
+                }, objectPlaceQueryBuilder));
+        }
     }
-    const objectPlaceBuilder = {
-        idObject: null,
-        idPlace: idPlace,
-        stillThere: null,
-        movedBy: null,
-        lastCheck: null,
+    const whereQueryBuilder = {
+        idObject: { [Op.or]: data.objects },
+    };
+    if (data.objects.length > 0) {
+        console.log("Multiple Update on ObjectPlace | 134:");
+        console.log(await objectPlaceController.updateMultiple({ lastCheck: check.id }, whereQueryBuilder));
     }
-    const checkBuilder = {
-        objectsToFind: objectsToFind.length,
-        foundObjects: data.objects.length,
-        missingObjects: (objectsToFind.length - objectsMatches),
-        whoChecked: null,
-        whereChecked: parseInt(idPlace),
-        notFoundObjects: data.notFoundObjects,
-        wrongPlaceObjects: data.wrongPlaceObjects
-    }
-    console.log();
-    return res.status(201).json();
     if (true) {
-        check = await checkController.create(data);
         return res.status(201).json(check);
     } else {
         return res.status(401).json({ 'message': 'Unauthorized' });

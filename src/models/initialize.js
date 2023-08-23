@@ -15,23 +15,23 @@ Check.belongsTo(Place,{foreignKey: 'whereChecked',});
 Place.hasMany(Check, {as:'whereChecked',foreignKey: 'whereChecked'});
 
 //Relations in Context table with Place
-Context.hasMany(Place, {as:'context',foreignKey: 'context'});
-Place.belongsTo(Context,{foreignKey: 'context'});
+Context.hasMany(Place, {as:'place',foreignKey: 'context'});
+Place.belongsTo(Context,{as:'contextPlace',foreignKey: 'context'});
 
 //Relations in ObjectPlace table with Object and Place
-ObjectPlace.belongsTo(Object, {foreignKey:'idObject'});
+ObjectPlace.belongsTo(Object,{ as:'object',foreignKey:'idObject'});
 Object.hasMany(ObjectPlace,{as:'objectInPlace',foreignKey:'idObject'});
-ObjectPlace.belongsTo(Place,{foreignKey:'idPlace'});
-Place.hasMany(ObjectPlace,{as:'place',foreignKey:'idObject'});
-ObjectPlace.belongsTo(Place,{foreignKey:'whereIs', allowNull: true});
+ObjectPlace.belongsTo(Place,{as:'place',foreignKey:'idPlace'});
+Place.hasMany(ObjectPlace,{as:'refPlace',foreignKey:'idObject'});
+ObjectPlace.belongsTo(Place,{as:'wherePlace',foreignKey:'whereIs', allowNull: true});
 Place.hasMany(ObjectPlace,{as:'whereIs',foreignKey:'whereIs', allowNull: true});
 
 //Relations in Movement table with Object, Place, User
 Movement.belongsTo(Object,{foreignKey:'idObject'});
 Object.hasMany(Movement, {as:'movement',foreignKey:'idObject'});
-Movement.belongsTo(Place, {foreignKey:'fromIdPlace'});
+Movement.belongsTo(Place, {as:'fromPlace',foreignKey:'fromIdPlace'});
 Place.hasMany(Movement, {as:'fromIdPlace', foreignKey:'fromIdPlace'});
-Movement.belongsTo(Place, {foreignKey:'toIdPlace'});
+Movement.belongsTo(Place, {as:'toPlace',foreignKey:'toIdPlace'});
 Place.hasMany(Movement, {as:'toIdPlace', foreignKey:'toIdPlace'});
 Movement.belongsTo(User, {foreignKey:'whoChanged'});
 User.hasMany(Movement,{as:'whoChanged', foreignKey:'whoChanged'});

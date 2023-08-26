@@ -3,7 +3,7 @@ const objectController = require("../controllers/objectController");
 exports.create = async (req, res) => {
     data = req.body;
     console.log(data);
-    //data.user_image = "/images/"+req.file.originalname;
+    //data.object_image = "/images/"+req.file.originalname;
     //rules
     if (true) {
         object = await objectController.create(data, res);
@@ -37,8 +37,8 @@ exports.select = async (req, res) => {
         console.log("No filter");
         //rules
         if (true) {
-            users = await userController.select(null, res);
-            return res.status(200).json(users);
+            objects = await objectController.select(null, res);
+            return res.status(200).json(objects);
         } else {
             return res.status(401).json({ 'message': 'Unauthorized' });
         }
@@ -47,8 +47,8 @@ exports.select = async (req, res) => {
         if (true) {
             //return res.status(200).json(filter);
 
-            users = await userController.select(filter, res);
-            return res.status(200).json(users);
+            objects = await objectController.select(filter, res);
+            return res.status(200).json(objects);
         } else {
             return res.status(401).json({ 'message': 'Unauthorized' });
         }

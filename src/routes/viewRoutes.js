@@ -30,5 +30,8 @@ router.get("/places/verifying/:id", async (req, res) => {
 router.get("/objects/verifying", async (req, res) => {
     res.render('verifyingObject', {"pageName":"Verificando objetos"});
 });
+router.get("/objects/add", async (req, res) => {
+    res.render('addObject', {"pageName":"Adicionando objetos"});
+});
 
 module.exports = router;

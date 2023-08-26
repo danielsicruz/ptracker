@@ -3,7 +3,7 @@ const Check = require("../models/mCheck");
 
 exports.create = async (req, res) => {
     data = req.body;
-    let place = await placeController.selectOne({vid:data.vid});
+    let place = await placeController.selectOne({ vid: data.vid });
     if (place == null) {
         place = await placeController.create(data);
         return res.status(201).json(place);
@@ -11,22 +11,22 @@ exports.create = async (req, res) => {
         return res.status(401).json({ 'message': 'Unauthorized' });
     }
 }
-exports.select = async (req,res) => {
-    data = req.body;
+exports.select = async (req, res) => {
+    data = req.query;
     filter = {
         vid: data.vid ? data.vid : null,
         name: data.name ? data.name : null,
-        place: data.place ? data.place : null,
+        context: data.context ? data.context : null,
         id: data.id ? data.id : null,
     }
     Object.keys(filter).forEach(key => {
         if (filter[key] == null) {
             delete filter[key];
         }
-        
+
     });
 
-    if (req.query.filter == undefined) {
+    if (Object.keys(filter).length === 0) {
 
         //We should create the 'filter' param to check if have filters and later get
         //all the params to filter the response
@@ -77,7 +77,7 @@ exports.test = async (req, res) => {
         include: [
             {
                 model: Check,
-                as:'whereChecked',
+                as: 'whereChecked',
                 required: false,
             },
         ],

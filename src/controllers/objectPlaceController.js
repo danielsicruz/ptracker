@@ -13,6 +13,12 @@ exports.create = async (data) => {
     return response;
 }
 
+exports.bulkCreate = async (data) => {
+    response = await ObjectPlace.bulkCreate(data);
+
+    return response;
+}
+
 exports.select = async (filters) => {
     let response;
     if (filters == null) {

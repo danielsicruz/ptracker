@@ -38,6 +38,7 @@
   <body>
     <%- include('./components/modalPlaces') %> <%-
     include('./components/themeSwitch') %>
+    <%- include('./components/modalFinishAddObject') %>
 
     <header
       class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow"
@@ -145,26 +146,36 @@
                     <div class="row g-3">
                       <div class="col-sm-6">
                         <label for="objectId" class="form-label">Id</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="objectId"
-                          placeholder=""
-                          value=""
-                          required
-                        />
+                        <div class="input-group has-validation">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="objectId"
+                            placeholder=""
+                            value=""
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Preencha o numero de identificação do objeto
+                          </div>
+                        </div>
                       </div>
 
                       <div class="col-sm-6">
                         <label for="objectName" class="form-label">Nome</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="objectName"
-                          placeholder=""
-                          value=""
-                          required
-                        />
+                        <div class="input-group has-validation">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="objectName"
+                            placeholder=""
+                            value=""
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Preencha o nome do objeto
+                          </div>
+                        </div>
                       </div>
 
                       <div class="col-12">
@@ -178,12 +189,23 @@
                             placeholder=""
                             required
                           ></textarea>
+                          <div class="invalid-feedback">
+                            Preencha uma descrição para o objeto
+                          </div>
                         </div>
                       </div>
                       <div class="col-12">
                         <label for="contextList" class="form-label"
                           >Inserido em</label
                         >
+                        <div
+                          class="alert alert-danger"
+                          hidden
+                          id="placeAlert"
+                          role="alert"
+                        >
+                          Defina um local para inserir os objetos
+                        </div>
                         <div class="dropdown">
                           <button
                             class="btn btn-secondary dropdown-toggle"
@@ -208,19 +230,20 @@
                         </div>
                       </div>
                     </div>
+
+                    <div class="mx-auto pt-3 text-center">
+                      <button class="btn btn-secondary" type="button" id="btnSimilar">
+                        Clique aqui para adicionar objetos similares
+                      </button>
+                      <button
+                        class="btn btn-outline-success px-4 col-3 mx-auto"
+                        type="button"
+                        id="saveButton"
+                      >
+                        Salvar
+                      </button>
+                    </div>
                   </form>
-                  <div class="mx-auto pt-3 text-center">
-                    <button class="btn btn-secondary" id="btnSimilar">
-                      Clique aqui para adicionar objetos similares
-                    </button>
-                    <button
-                      class="btn btn-outline-success px-4 col-3 mx-auto"
-                      type="button"
-                      id="saveButton"
-                    >
-                      Salvar
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -257,258 +280,7 @@
       integrity="sha384-gdQErvCNWvHQZj6XZM0dNsAoY4v+j5P1XDpNkcM3HJG1Yx04ecqIHk7+4VBOCHOG"
       crossorigin="anonymous"
     ></script>
-    <script>
-      let similarCount = 2;
-      document
-        .getElementById("addSimilar")
-        .addEventListener("click", () => renderNewSimilarInput());
-      function renderNewSimilarInput() {
-        const removeDiv = document.createElement("div");
-        removeDiv.setAttribute("class", "col-sm-3 pt-2");
-
-        const similarDiv = document.getElementById("similarDiv");
-        similarDiv.appendChild(removeDiv);
-
-        const removeButton = document.createElement("button");
-        removeButton.setAttribute("class", "btn btn-outline-danger");
-        removeButton.setAttribute("type", "button");
-        removeButton.setAttribute("rownumber", similarCount - 1);
-        removeButton.setAttribute("onclick", "removeSimilar(this)");
-        removeButton.innerHTML = "Remover";
-        removeDiv.appendChild(removeButton);
-
-        const inputDiv = document.createElement("div");
-        inputDiv.setAttribute("class", "col-sm-3 p-2");
-        inputDiv.setAttribute("id", "similarInputDiv" + similarCount);
-
-        const input = document.createElement("input");
-        input.setAttribute("type", "text");
-        input.setAttribute("class", "form-control");
-        input.setAttribute("name", "similarInput");
-        input.setAttribute("id", "similarInput" + similarCount);
-        input.setAttribute("onkeydown", "testForRender(event)");
-
-        inputDiv.appendChild(input);
-
-        similarDiv.appendChild(inputDiv);
-
-        const buttonDiv = document.getElementById("addSimilarDiv");
-
-        buttonDiv.remove();
-
-        similarDiv.appendChild(buttonDiv);
-        input.focus();
-        similarCount++;
-      }
-      function testForRender(event) {
-        if (event.key === "Enter" || event.keyCode === 13) {
-          renderNewSimilarInput();
-        }
-      }
-      function removeSimilar(element) {
-        const number = element.getAttribute("rownumber");
-        document.getElementById("similarInputDiv" + number).remove();
-        element.parentElement.remove();
-        document.getElementById("similarInput" + (similarCount - 1)).focus();
-      }
-      const modal = document.getElementById("placesModal");
-      document.addEventListener("DOMContentLoaded", () => {
-        fetch("/api/v1/context", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }).then(async (response) => {
-          if (response.status == 201 || response.status == 200) {
-            renderContexts(await response.json());
-          }
-          if (response.status == 404) {
-            console.log(await response.json());
-          }
-        });
-      });
-
-      document.getElementById("imageInput").addEventListener(
-        "change",
-        (e) => {
-          const element = document.getElementById("imageInput");
-          if (element.files && element.files[0]) {
-            var file = new FileReader();
-            file.onload = function (e) {
-              document
-                .getElementById("preview")
-                .setAttribute("src", e.target.result);
-              document
-                .getElementById("uploadText")
-                .setAttribute("hidden", "true");
-              document
-                .getElementById("uploadIcon")
-                .setAttribute("hidden", "true");
-            };
-            file.readAsDataURL(element.files[0]);
-          }
-        },
-        false
-      );
-
-      let idPlace = 0;
-      function selectAmbient(id, name) {
-        document.getElementById("placesButton").innerHTML = name;
-        idPlace = id;
-      }
-
-      document.getElementById("saveButton").addEventListener("click", () => {
-        if (idPlace == 0) {
-          //Aqui tem que retornar um erro
-          //Paramos aqui, faça o front retornar um erro quando o place não estiver selecionado
-          //E faça retornar uma mensagem de sucesso quando inserir com sucesso
-          //Limpe os campos se o response for 201
-          console.log("não passou");
-
-          return 0;
-        }
-        const similars = document.getElementsByName("similarInput");
-        const similarIds = Array();
-        if (similars.length > 0) {
-          similars.forEach((similar) => {
-            console.log(similar.value == "");
-            if (!similarIds.includes(similar.value) && similar.value != "") {
-              similarIds.push(similar.value);
-            }
-          });
-        }
-        const objectName = document.getElementById("objectName");
-        const description = document.getElementById("description");
-        const objectId = document.getElementById("objectId");
-        const imageInput = document.getElementById("imageInput");
-
-        const formData = new FormData();
-
-        formData.append("id", objectId.value);
-        formData.append("idPlace", idPlace);
-        formData.append("name", objectName.value);
-        formData.append("description", description.value);
-        formData.append("similars", JSON.stringify(similarIds));
-        formData.append("image", imageInput.files[0]);
-
-        fetch("/api/v1/object", {
-          method: "POST",
-          body: formData,
-        })
-          .then(async (response) => {
-            if (response.status == 200 || response.status == 201) {
-              console.log(await response.json());
-            }
-          })
-          .catch((error) => {
-            //Ocorreu um erro
-            console.log(error);
-          });
-      });
-      function renderContexts(data) {
-        const contextList = document.getElementById("contextList");
-        contextList.innerHTML = "";
-        data.forEach((context) => {
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          //class="dropdown-item" onclick="selectContext(this)
-          a.setAttribute("class", "dropdown-item");
-          a.innerHTML = context.name;
-          a.setAttribute("value", context.id);
-          a.setAttribute("onclick", "selectContext(this)");
-          li.appendChild(a);
-          contextList.appendChild(li);
-        });
-      }
-      function selectContext(element) {
-        document.getElementById("contextButton").innerHTML = element.innerHTML;
-        fetch("/api/v1/place?context=" + element.getAttribute("value"), {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }).then(async (response) => {
-          renderPlaces(await response.json());
-        });
-      }
-
-      function renderPlaces(places) {
-        savePlaces(places);
-        filterPlaces("", Array());
-        idPlace = 0;
-        const placesButton = document.getElementById("placesButton");
-        placesButton.removeAttribute("hidden");
-        placesButton.innerHTML = "Selecione um ambiente";
-        places.forEach((place) => {
-          document.getElementById("placeList").innerHTML += cardBuilder(place);
-        });
-      }
-      function cardBuilder(place) {
-        return (
-          '<div class="col">' +
-          '<div class="card" data-bs-dismiss="modal" onclick="selectAmbient(' +
-          `${place.id},'${place.name}'` +
-          ');">' +
-          "<img" +
-          ' src="/assets/images/Sesi-SP.jpg"' +
-          ' class="card-img-top"' +
-          ' alt="..."' +
-          "/>" +
-          '<div class="card-body">' +
-          '<h5 class="card-title">' +
-          place.name +
-          "</h5>" +
-          "</div>" +
-          "</div>" +
-          "</div>"
-        );
-      }
-      let savedPlaces = Array();
-      function savePlaces(places) {
-        savedPlaces = places;
-      }
-      function filterPlaces(search, places) {
-        placeList.innerHTML = "";
-
-        const filteredPlaces = places.filter((place) => {
-          return (
-            place.name.toLowerCase().includes(search.toLowerCase()) ||
-            place.vid.includes(search)
-          );
-        });
-
-        filteredPlaces.forEach((place) => {
-          placeList.innerHTML += cardBuilder(place);
-        });
-      }
-      searchBar.addEventListener("input", () => {
-        const searchTerm = searchBar.value;
-        filterPlaces(searchTerm, savedPlaces);
-      });
-      filterPlaces("", Array());
-
-      document.getElementById("btnSimilar").addEventListener("click", () => {
-        document.getElementById("similarDiv").removeAttribute("hidden");
-        document
-          .getElementById("similarInput1")
-          .setAttribute("name", "similarInput");
-      });
-
-      function datetime(data) {
-        const date = data.toString().split("-");
-        return (
-          date[2].split("T")[0] +
-          "/" +
-          date[1] +
-          "/" +
-          date[0] +
-          " às " +
-          date[2].split("T")[1].split(":")[0] +
-          ":" +
-          date[2].split("T")[1].split(":")[1]
-        );
-      }
-    </script>
+    <script src="/assets/js/addObject.js"></script>
     <script src="/assets/js/dashboard.js"></script>
   </body>
 </html>

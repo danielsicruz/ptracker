@@ -102,11 +102,43 @@
               <div class="row">
                 <h3 class="pt-3">Adicionando objetos</h3>
               </div>
-              <div id="notFound" hidden><h4>Objeto não encontrado</h4></div>
-
               <div id="objectData" class="row row-cols-1 row-cols-md-3 g-4">
                 <div id="imgDiv" class="col-md-5 col-lg-4 order-md-last">
-                  <%- include('./components/loading') %>
+                  <label class="custum-file-upload" for="imageInput">
+                    <img
+                      class="img-fluid"
+                      id="preview"
+                      type="file"
+                      name="image"
+                    />
+
+                    <div class="icon" id="uploadIcon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill=""
+                        viewBox="0 0 24 24"
+                      >
+                        <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+                        <g
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          id="SVGRepo_tracerCarrier"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
+                          <path
+                            fill=""
+                            d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                            clip-rule="evenodd"
+                            fill-rule="evenodd"
+                          ></path>
+                        </g>
+                      </svg>
+                    </div>
+                    <div class="text" id="uploadText">
+                      <span>Clique aqui para enviar imagem</span>
+                    </div>
+                    <input type="file" id="imageInput" />
+                  </label>
                 </div>
                 <div class="col-md-7 col-lg-8">
                   <form class="needs-validation" novalidate>
@@ -148,7 +180,6 @@
                           ></textarea>
                         </div>
                       </div>
-
                       <div class="col-12">
                         <label for="contextList" class="form-label"
                           >Inserido em</label
@@ -297,6 +328,29 @@
         });
       });
 
+      document.getElementById("imageInput").addEventListener(
+        "change",
+        (e) => {
+          const element = document.getElementById("imageInput");
+          if (element.files && element.files[0]) {
+            var file = new FileReader();
+            file.onload = function (e) {
+              document
+                .getElementById("preview")
+                .setAttribute("src", e.target.result);
+              document
+                .getElementById("uploadText")
+                .setAttribute("hidden", "true");
+              document
+                .getElementById("uploadIcon")
+                .setAttribute("hidden", "true");
+            };
+            file.readAsDataURL(element.files[0]);
+          }
+        },
+        false
+      );
+
       let idPlace = 0;
       function selectAmbient(id, name) {
         document.getElementById("placesButton").innerHTML = name;
@@ -306,29 +360,50 @@
       document.getElementById("saveButton").addEventListener("click", () => {
         if (idPlace == 0) {
           //Aqui tem que retornar um erro
+          //Paramos aqui, faça o front retornar um erro quando o place não estiver selecionado
+          //E faça retornar uma mensagem de sucesso quando inserir com sucesso
+          //Limpe os campos se o response for 201
           console.log("não passou");
 
           return 0;
         }
-        console.log("passou");
         const similars = document.getElementsByName("similarInput");
         const similarIds = Array();
         if (similars.length > 0) {
           similars.forEach((similar) => {
-            if (similarIds.find(similar.value) == "undefined") {
+            console.log(similar.value == "");
+            if (!similarIds.includes(similar.value) && similar.value != "") {
               similarIds.push(similar.value);
             }
           });
         }
         const objectName = document.getElementById("objectName");
         const description = document.getElementById("description");
-        const dataBuilder = {
-          idPlace: idPlace,
-          name: objectName,
-          description:description,
-          similars: similarIds,
-        };
-        
+        const objectId = document.getElementById("objectId");
+        const imageInput = document.getElementById("imageInput");
+
+        const formData = new FormData();
+
+        formData.append("id", objectId.value);
+        formData.append("idPlace", idPlace);
+        formData.append("name", objectName.value);
+        formData.append("description", description.value);
+        formData.append("similars", JSON.stringify(similarIds));
+        formData.append("image", imageInput.files[0]);
+
+        fetch("/api/v1/object", {
+          method: "POST",
+          body: formData,
+        })
+          .then(async (response) => {
+            if (response.status == 200 || response.status == 201) {
+              console.log(await response.json());
+            }
+          })
+          .catch((error) => {
+            //Ocorreu um erro
+            console.log(error);
+          });
       });
       function renderContexts(data) {
         const contextList = document.getElementById("contextList");
@@ -360,6 +435,7 @@
       function renderPlaces(places) {
         savePlaces(places);
         filterPlaces("", Array());
+        idPlace = 0;
         const placesButton = document.getElementById("placesButton");
         placesButton.removeAttribute("hidden");
         placesButton.innerHTML = "Selecione um ambiente";

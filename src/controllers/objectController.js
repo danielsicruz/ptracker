@@ -8,6 +8,12 @@ exports.create = async (data) => {
         imagePath: data.imagePath,
         dispached: data.dispached,
     });
+    return response;
+}
+
+exports.bulkCreate = async (data) => {
+    response = await Object.bulkCreate(data);
+    return response;
 }
 
 exports.select = async (filters = null, res) => {

@@ -1,10 +1,90 @@
 const objectController = require("../controllers/objectController");
+const objectPlaceController = require("../controllers/objectPlaceController");
 
 exports.create = async (req, res) => {
     data = req.body;
-    console.log(data);
-    //data.object_image = "/images/"+req.file.originalname;
-    //rules
+    const similars = JSON.parse(data.similars);
+    const path = req.file.path.split("public")[1];
+
+    if (similars.length > 0) {
+        const objectDataBuilder = Array();
+        if (req.file) {
+            similars.forEach(similar => {
+                objectDataBuilder.push({
+                    id: similar,
+                    name: data.name,
+                    description: data.description,
+                    dispatched: 0,
+                    imagePath: path
+                });
+            });
+            objectDataBuilder.push({
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                dispatched: 0,
+                imagePath: path
+            });
+        } else {
+            similars.forEach(similar => {
+                objectDataBuilder.push({
+                    id: similar,
+                    name: data.name,
+                    description: data.description,
+                    dispatched: 0
+                });
+            });
+            objectDataBuilder.push({
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                dispatched: 0
+            });
+        }
+
+
+        const objects = await objectController.bulkCreate(objectDataBuilder);
+        const objectPlaceDataBuilder = Array();
+        objects.forEach(object => {
+            objectPlaceDataBuilder.push({
+                movedBy: '2cf96536-daf0-41a6-8c3b-01935834a7c3',
+                idObject: object.id,
+                idPlace: data.idPlace
+            })
+        });
+        const objectPlaces = await objectPlaceController.bulkCreate(objectPlaceDataBuilder);
+        return res.status(201).json(objectPlaces);
+    } else {
+        const objectTest = await objectController.select({ id: data.id });
+        if (objectTest.length > 0) {
+            return res.status(422).json({ "message": "The id already exists" });
+        }
+        let dataBuilder;
+        if (req.file) {
+            dataBuilder = {
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                dispatched: 0,
+                imagePath: path
+            };
+        } else {
+            dataBuilder = {
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                dispatched: 0
+            };
+        }
+        const object = await objectController.create(dataBuilder);
+        const objectPlaceBulder = {
+            movedBy: '2cf96536-daf0-41a6-8c3b-01935834a7c3',
+            idObject: object.id,
+            idPlace: data.idPlace
+        }
+        const objectPlaces = await objectPlaceController.create(objectPlaceBulder);
+        return res.status(201).json(objectPlaces);
+    }
     if (true) {
         object = await objectController.create(data, res);
         return res.status(201).json(object);

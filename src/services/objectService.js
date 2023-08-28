@@ -3,9 +3,12 @@ const objectPlaceController = require("../controllers/objectPlaceController");
 
 exports.create = async (req, res) => {
     data = req.body;
+    console.log(data);
     const similars = JSON.parse(data.similars);
-    const path = req.file.path.split("public")[1];
-
+    let path = null;
+    if (req.file) {
+        path = req.file.path.split("public")[1];
+    }
     if (similars.length > 0) {
         const objectDataBuilder = Array();
         if (req.file) {
@@ -57,7 +60,7 @@ exports.create = async (req, res) => {
     } else {
         const objectTest = await objectController.select({ id: data.id });
         if (objectTest.length > 0) {
-            return res.status(422).json({ "message": "The id already exists" });
+            return res.status(422).json({ "message": "The id of object already exists" });
         }
         let dataBuilder;
         if (req.file) {

@@ -1,12 +1,12 @@
 const express = require('express');
-const bodyParser = require('body-parser')
-const path = require("path")
+const bodyParser = require('body-parser');
+const path = require("path");
 require("dotenv").config();
-const db = require("./src/models/db")
-db.sync()
-routes = require("./src/routes/routes")
-views = require("./src/routes/viewRoutes")
-require('./src/models/initialize')
+const db = require("./src/models/db");
+db.sync();
+routes = require("./src/routes/routes");
+views = require("./src/routes/viewRoutes");
+require('./src/models/initialize');
 
 const app = express();
 const port = 3000;

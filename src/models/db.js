@@ -7,6 +7,6 @@ const database = process.env.DB_DATABASE;
 
 const componenteSequelize = new Sequelize(database, user, password,
     {
-        dialect: 'mariadb', host: host, port:3310
+        dialect: 'mariadb', host: host, port:3310, timezone:"-03:00"
     });
 module.exports = componenteSequelize;

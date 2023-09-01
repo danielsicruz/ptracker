@@ -1,0 +1,70 @@
+<div
+  class="modal fade modal-lg"
+  id="finishAddObjectModal"
+  tabindex="-1"
+  aria-labelledby="finishAddObjectModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="finishAddObjectModalLabel">
+          Vamos confirmar
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="success-request body" id="mFAOSuccessEnd" hidden="true">
+          <%- include("./successRequest") %>
+        </div>
+        <div class="error-request body" id="mFAOErrorEnd" hidden="true">
+          <%- include("./errorRequest") %>
+        </div>
+
+        <div id="mFAOLoading" hidden="true">
+          <h3 class="text-center">Salvando</h3>
+          <%- include("./loading") %>
+        </div>
+        <div id="mFAOContent">
+          <p id="mFAOl1"></p>
+          <table class="table table-responsive" id="mFAOtable">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nome</th>
+              </tr>
+            </thead>
+            <tbody id="mFAOtBody"></tbody>
+          </table>
+          <div id="mFAOdeniedDiv">
+            <hr class="mb-1" />
+            <h4 class="center text-center" id="mFAOdeniedTTitle">Os dados abaixo não serão salvos</h4>
+            <hr class="mt-1" />
+            <table class="table table-responsive table-danger" id="mFAOdeniedTable">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Nome</th>
+                </tr>
+              </thead>
+              <tbody id="mFAOdeniedTBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="mFAOFooter">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Fechar
+        </button>
+        <button type="button" class="btn btn-primary" id="finishSave">
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

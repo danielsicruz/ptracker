@@ -10,6 +10,11 @@ exports.create = async (data) => {
     return response;
 }
 
+exports.bulkCreate = async (data)=>{
+    const response = await Place.bulkCreate(data);
+    return response;
+}
+
 exports.select = async (filters) => {
     let response;
     if (filters == null) {

@@ -1,14 +1,78 @@
+const { Op } = require("sequelize");
 const placeController = require("../controllers/placeController");
 const Check = require("../models/mCheck");
 
 exports.create = async (req, res) => {
     data = req.body;
-    let place = await placeController.selectOne({ vid: data.vid });
-    if (place == null) {
-        place = await placeController.create(data);
-        return res.status(201).json(place);
+
+    const placesToCheck = Array();
+    const placesNotAdded = Array();
+    placesToCheck.push({ vid: data.vid, name: data.name, context: data.idContext });
+
+    data.notAdded.forEach(place => {
+        placesNotAdded.push({
+            vid: place.vid,
+            name: place.name,
+            context: place.context,
+            comment: "Have missing content",
+            code: 400
+        })
+    });
+
+    if (data.morePlaces.length > 0) {
+
+        data.morePlaces.forEach(place => {
+            placesToCheck.push({
+                vid: place.vid,
+                name: place.name,
+                context: place.context
+            })
+        });
+
+        const dbPlacesToCheck = await placeController.select({ vid: { [Op.or]: placesToCheck.map(place => place.vid) } });
+
+        const placesToAdd = Array();
+
+        if (dbPlacesToCheck.length > 0) {
+            dbPlacesToCheck.forEach(place => {
+                placesNotAdded.push({
+                    vid: place.vid,
+                    name: place.name,
+                    context: place.context,
+                    comment: "Already used VID",
+                    code: 405
+                });
+            });
+        }
+
+        placesToCheck.forEach(place => {
+            if (!dbPlacesToCheck.find(dbPlace => dbPlace.vid === place.vid)) {
+                placesToAdd.push(place);
+            }
+        });
+
+        const places = await placeController.bulkCreate(placesToAdd);
+        if (places.length > 0 && placesNotAdded.length === 0) {
+            return res.status(201).json(places);
+        } else if (places.length > 0 && placesNotAdded.length > 0) {
+            return res.status(201).json({ "created": places, "notCreated": placesNotAdded });
+        } else {
+            return res.status(405).json(placesNotAdded);
+        }
     } else {
-        return res.status(401).json({ 'message': 'Unauthorized' });
+        const place = await placeController.selectOne({ vid: data.vid });
+        if (place == null) {
+            place = await placeController.create(data);
+        } else {
+            placesNotAdded.push({
+                vid: place.vid,
+                name: place.name,
+                context: place.context,
+                comment: "Already used VID",
+                code: 405
+            });
+            return res.status(405).json(placesNotAdded);
+        }
     }
 }
 exports.select = async (req, res) => {
@@ -23,7 +87,6 @@ exports.select = async (req, res) => {
         if (filter[key] == null) {
             delete filter[key];
         }
-
     });
 
     if (Object.keys(filter).length === 0) {

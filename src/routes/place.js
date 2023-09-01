@@ -1,5 +1,4 @@
 const express = require("express");
-const { route } = require("express/lib/application");
 let router = express.Router();
 const placeService = require("../services/placeService");
 

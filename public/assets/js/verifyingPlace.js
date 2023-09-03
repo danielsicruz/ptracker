@@ -51,7 +51,7 @@ function buildTableRow(data) {
             'Devolução pendente, foi movimentado para ' + movement.Place.name + ' por ' + movement.User.name + ' e a devolução não foi registrada' +
             "</td>" +
             "<td>" +
-            data.object.imagePath +
+            '<img src="'+data.object.imagePath+'" class="img-fluid" style="max-width:100px">'+
             "</td>" +
             "</tr>"
         );
@@ -74,7 +74,7 @@ function buildTableRow(data) {
             'Objeto marcado como perdido, ele deveria estar em ' + data.place.name + ' em ' + data.place.contextPlace.name +
             "</td>" +
             "<td>" +
-            data.object.imagePath +
+            '<img src="'+data.object.imagePath+'" class="img-fluid" style="max-width:100px">'+
             "</td>" +
             "</tr>"
         );
@@ -95,7 +95,7 @@ function buildTableRow(data) {
         '<td id="observations-' + data.object.id + '">' +
         "</td>" +
         "<td>" +
-        data.object.imagePath +
+        '<img src="'+data.object.imagePath+'" class="img-fluid" style="max-width:100px">'+
         "</td>" +
         "</tr>"
     );
